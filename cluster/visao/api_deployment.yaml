@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visao-api-deployment
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: visao-api
+  template:
+    metadata:
+      labels:
+        app: visao-api
+    spec:
+      containers:
+      - name: visao-api
+        image: moisespompilio/visao:1.0.0
+        ports:
+        - containerPort: 3004
