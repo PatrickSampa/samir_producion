@@ -1,0 +1,67 @@
+version: '3'
+services:
+  controle_usuario_samir:
+    restart: always
+    image: moisespompilio/samir_controle_usuario:1.0.0
+    hostname: controle_usuario_samir-{{.Task.Slot}}
+    networks:
+      - samir_networks
+    depends_on:
+      - controle_usuario_samir_database
+    environment:
+      DOCKER_PORT: ${PORT_NGINX}
+      API_PORT: ${PORT_START}
+      DB_HOST: controle_usuario_samir_database
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - ${PORT_START}-${PORT_END}:${PORT_START}
+      # se preferir, pode usar a notação abaixo para definir a porta do host para cada réplica individualmente
+      # - 3001:3001
+      # - 3002:3002
+      # - 3003:3003
+      # - 3004:3004
+      # - 3005:3005
+    deploy:
+      replicas: 5
+      placement:
+        constraints:
+          - node.role == worker
+
+  controle_usuario_samir_database:
+    container_name: controle_usuario_samir_database
+    image: postgres
+    restart: always
+    networks:
+      - samir_networks
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+    - ${DB_PORT}:5432
+    volumes:
+      - controle_usuario_samir_database:/var/lib/postgresql/controle_usuario_samir_database
+
+
+  nginx:
+    depends_on:
+      - controle_usuario_samir
+    restart: always
+    image: nginx
+    networks:
+      - samir_networks
+    ports:
+      - ${PORT_NGINX}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  samir_networks:
+    driver: bridge
+
+volumes:
+  controle_usuario_samir_database: 
+    driver: local

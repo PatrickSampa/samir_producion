@@ -1,0 +1,59 @@
+version: '3'
+services:
+  calculadora_samir:
+    restart: always
+    image: moisespompilio/samir_calculadora:1.0.0
+    hostname: calculadora_samir-{{.Task.Slot}}
+    networks:
+      - samir_networks
+    depends_on:
+      - calculadora_samir_database
+    environment:
+      - spring.datasource.url=jdbc:postgresql://calculadora_samir_database:5432/${DB_NAME}
+      - spring.datasource.username=${DB_USERNAME}
+      - spring.datasource.password=${DB_PASSWORD}
+      - spring.jpa.hibernate.ddl-auto=update
+      - server.port=${PORT_START}
+    ports:
+      - ${PORT_START}-${PORT_END}:${PORT_START}
+    deploy:
+      replicas: 5
+      placement:
+        constraints:
+          - node.role == worker
+
+  calculadora_samir_database:
+    container_name: calculadora_samir_database
+    networks:
+      - samir_networks
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+    - 5433:5432
+    volumes:
+      - db_data:/var/lib/postgresql/samir_calculadora
+
+
+  nginx:
+    depends_on:
+      - calculadora_samir
+    restart: always
+    image: nginx
+    networks:
+      - samir_networks
+    ports:
+      - ${PORT_NGINX}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  samir_networks:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
