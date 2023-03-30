@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     image: moisespompilio/samir_front:1.0.0
+    restart: always
     ports:
       - "8080:8080"
 
