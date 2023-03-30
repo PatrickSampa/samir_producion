@@ -18,12 +18,6 @@ services:
       DB_NAME: ${DB_NAME}
     ports:
       - ${PORT_START}-${PORT_END}:${PORT_START}
-      # se preferir, pode usar a notação abaixo para definir a porta do host para cada réplica individualmente
-      # - 3001:3001
-      # - 3002:3002
-      # - 3003:3003
-      # - 3004:3004
-      # - 3005:3005
     deploy:
       replicas: 5
       placement:
@@ -35,7 +29,8 @@ services:
     image: postgres
     restart: always
     networks:
-      - samir_networks
+      samir_networks:
+        ipv4_address: 10.0.100.3
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
@@ -44,6 +39,7 @@ services:
     - ${DB_PORT}:5432
     volumes:
       - controle_usuario_samir_database:/var/lib/postgresql/controle_usuario_samir_database
+    
 
 
   nginx:
@@ -61,7 +57,13 @@ services:
 networks:
   samir_networks:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.100.2/24
 
 volumes:
   controle_usuario_samir_database: 
     driver: local
+
+
