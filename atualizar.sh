@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Atualiza o repositório
 git pull origin main
 
