@@ -2,13 +2,21 @@
 git pull origin main
 
 # Executa o cluster no diretório cluster/front_samir/
-docker-compose -f cluster/front_samir/docker-compose.yml up --build -d
+cd cluster/front_samir/
+docker-compose up --build -d
+cd ../../
 
 # Executa o cluster no diretório cluster/calculadora_samir/
-docker-compose -f cluster/calculadora_samir/docker-compose.yml up --build -d
+docker-compose up --build -d
+cd cluster/calculadora_samir/
+cd ../../
 
 # Executa o cluster no diretório cluster/controle_usuario_samir/
-docker-compose -f cluster/controle_usuario_samir/docker-compose.yml up --build -d
+docker-compose up --build -d
+cd cluster/controle_usuario_samir/
+cd ../../
 
 # Executa o cluster no diretório test_cluster/front
-docker-compose -f test_cluster/front/docker-compose.yml up --build -d
+docker-compose up --build -d
+cd test_cluster/front
+cd ../../
