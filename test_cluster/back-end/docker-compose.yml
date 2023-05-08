@@ -13,7 +13,7 @@ services:
       - spring.datasource.password=samir
       - spring.jpa.hibernate.ddl-auto=update
     ports:
-      - 3004:8888
+      - 8888:8888
   calculadora_samir_database:
     container_name: samir-database
     image: postgres
