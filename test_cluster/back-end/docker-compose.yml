@@ -23,7 +23,7 @@ services:
       POSTGRES_USER: samir
       POSTGRES_PASSWORD: samir
     ports:
-    - 5433:5432
+    - 5434:5432
     volumes:
       - db_data:/var/lib/postgresql/samir_calculadora
   
